@@ -1,62 +1,38 @@
-<!DOCTYPE html>
-<html lang="pt-BR">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Calculadora de Rendimento Mensal de Investimento - Atualizada</title>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjs/11.8.0/math.js"></script>
-    <style>
-        body { font-family: Arial, sans-serif; line-height: 1.6; padding: 20px; }
-        h1 { color: #333; }
-        #resultado { margin-top: 20px; }
-        table { border-collapse: collapse; width: 100%; }
-        th, td { border: 1px solid #ddd; padding: 8px; text-align: left; }
-        th { background-color: #f2f2f2; }
-    </style>
-</head>
-<body>
-    <h1>Calculadora de Rendimento Mensal de Investimento - Atualizada</h1>
-    <div id="resultado"></div>
+document.addEventListener('DOMContentLoaded', function() {
+    const tableBody = document.getElementById('calculatorBody');
+    const summary = document.getElementById('summary');
+    let totalRendimento = 0;
 
-    <script>
-        function calcularRendimento() {
-            const valorInvestido = 890000;
-            const meses = 36; // 3 anos
-            
-            let resultado = '<table><tr><th>Mês</th><th>Data</th><th>Rendimento Líquido (R$)</th><th>Alíquota IR (%)</th></tr>';
-            let totalRendimento = 0;
-            
-            for (let i = 1; i <= meses; i++) {
-                let rendimentoLiquido, aliquotaIR;
-                let data = new Date(2024, 7 + i, 1); // Começando em 1/9/2024
-                
-                if (i <= 5) {
-                    rendimentoLiquido = 9656.50;
-                    aliquotaIR = 22.5;
-                } else if (i >= 6 && i <= 11) {
-                    rendimentoLiquido = 9968;
-                    aliquotaIR = 20;
-                } else if (i >= 12 && i <= 23) {
-                    rendimentoLiquido = 12279.50;
-                    aliquotaIR = 17.5;
-                } else {
-                    rendimentoLiquido = 10591;
-                    aliquotaIR = 15;
-                }
-                
-                totalRendimento += rendimentoLiquido;
-                
-                resultado += `<tr><td>${i}</td><td>${data.toLocaleDateString('pt-BR')}</td><td>${rendimentoLiquido.toFixed(2)}</td><td>${aliquotaIR.toFixed(1)}</td></tr>`;
-            }
-            
-            resultado += '</table>';
-            resultado += `<br>Rendimento Total: R$ ${totalRendimento.toFixed(2)}`;
-            resultado += `<br>Rendimento Médio Mensal: R$ ${(totalRendimento / meses).toFixed(2)}`;
-            
-            document.getElementById('resultado').innerHTML = resultado;
-        }
+    for (let i = 1; i <= 36; i++) {
+        const row = tableBody.insertRow();
         
-        calcularRendimento();
-    </script>
-</body>
-</html>
+        // Mês
+        row.insertCell().textContent = i;
+        
+        // Data
+        const date = new Date(2024, 7 + i, 1);
+        row.insertCell().textContent = date.toLocaleDateString('pt-BR');
+        
+        // Rendimento Líquido
+        let rendimento;
+        if (i <= 5) rendimento = 9656.50;
+        else if (i <= 11) rendimento = 9968;
+        else if (i <= 23) rendimento = 12279.50;
+        else rendimento = 10591;
+        row.insertCell().textContent = rendimento.toFixed(2);
+        totalRendimento += rendimento;
+        
+        // Alíquota IR
+        let aliquota;
+        if (i <= 5) aliquota = 22.5;
+        else if (i <= 11) aliquota = 20;
+        else if (i <= 23) aliquota = 17.5;
+        else aliquota = 15;
+        row.insertCell().textContent = aliquota.toFixed(1) + '%';
+    }
+
+    summary.innerHTML = `
+        Rendimento Total: R$ ${totalRendimento.toFixed(2)}<br>
+        Rendimento Médio Mensal: R$ ${(totalRendimento / 36).toFixed(2)}
+    `;
+});
